@@ -55,7 +55,7 @@ class _TawafCounterState extends State<TawafCounter> {
         context: context,
         builder: (context) => AlertDialog(
           title: Text("Reminder"),
-          content: Text("Did you forget to press the counter button?"),
+          content: Text("Did you forget to press tawaf the counter button?"),
           actions: <Widget>[
             TextButton(
               onPressed: () {

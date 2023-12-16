@@ -56,7 +56,7 @@ class _SaiCounterState extends State<SaiCounter> {
         context: context,
         builder: (context) => AlertDialog(
           title: Text("Reminder"),
-          content: Text("Did you forget to press the counter button?"),
+          content: Text("Did you forget to press the Sa'i counter button?"),
           actions: <Widget>[
             TextButton(
               onPressed: () {
