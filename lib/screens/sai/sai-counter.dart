@@ -46,7 +46,7 @@ class _SaiCounterState extends State<SaiCounter> {
 
   void _startTimer() {
     _timer?.cancel(); // Cancel any existing timer
-    _timer = Timer(Duration(minutes: 1), _showUpdatePopup);
+    _timer = Timer(Duration(minutes: 2), _showUpdatePopup);
   }
 
   void _showUpdatePopup() {
