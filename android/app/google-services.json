@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "894982810977",
+    "firebase_url": "https://fypdatabase-c8728.firebaseio.com",
+    "project_id": "fypdatabase-c8728",
+    "storage_bucket": "fypdatabase-c8728.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:894982810977:android:e69344bb8e91e3c3eda920",
+        "android_client_info": {
+          "package_name": "me.nafish.fintracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "894982810977-fkotf69j6d7fb3bdle4mr6h5pr9v6rc1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_LTqJmhpfJn0C-HgNX-4k9inMR1fI640"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "894982810977-fkotf69j6d7fb3bdle4mr6h5pr9v6rc1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
