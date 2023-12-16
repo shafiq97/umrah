@@ -347,6 +347,39 @@ class _HomeScreenState extends State<HomeScreen> {
                   onTap: () =>
                       _launchUrl("https://www.youtube.com/watch?v=_ek1ABD47xA"),
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
+                AnyLinkPreview(
+                  link:
+                      "https://muftiwp.gov.my/en/artikel/bayan-li-al-haj/2747-bayan-li-al-haj-series-37-what-is-permissible-after-tawaf-wada",
+                  displayDirection: UIDirection.uiDirectionHorizontal,
+                  showMultimedia: true,
+                  bodyMaxLines: 5,
+                  bodyTextOverflow: TextOverflow.ellipsis,
+                  titleStyle: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                  bodyStyle: const TextStyle(color: Colors.grey, fontSize: 12),
+                  errorBody: 'Show my custom error body',
+                  errorTitle: 'Show my custom error title',
+                  errorWidget: Container(
+                    color: Colors.grey[300],
+                    child: const Text('Oops!'),
+                  ),
+                  errorImage: "https://google.com/",
+                  cache: const Duration(days: 7),
+                  backgroundColor: Colors.grey[300],
+                  borderRadius: 12,
+                  removeElevation: false,
+                  boxShadow: const [
+                    BoxShadow(blurRadius: 3, color: Colors.grey)
+                  ],
+                  onTap: () => _launchUrl(
+                      "https://muftiwp.gov.my/en/artikel/bayan-li-al-haj/2747-bayan-li-al-haj-series-37-what-is-permissible-after-tawaf-wada"),
+                ),
               ],
             ),
           ),
