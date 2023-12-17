@@ -1,17 +1,21 @@
 import 'package:fintracker/providers/app_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:pdftron_flutter/pdftron_flutter.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
-
-import '../../app.dart';
+import 'package:permission_handler/permission_handler.dart'; // Add this import
+import 'dart:io';
 
 class SaiCounter extends StatefulWidget {
+  const SaiCounter({super.key});
+
   @override
-  _SaiCounterState createState() => _SaiCounterState();
+  State<SaiCounter> createState() => _SaiCounterState();
 }
 
 class _SaiCounterState extends State<SaiCounter> {
   Timer? _timer;
+  bool isDialogShowing = false; // Add a flag to track dialog state
 
   @override
   void didChangeDependencies() {
@@ -22,7 +26,11 @@ class _SaiCounterState extends State<SaiCounter> {
 
   @override
   void dispose() {
-    // routeObserver.unsubscribe(this as RouteAware);
+    if (isDialogShowing) {
+      Navigator.of(context, rootNavigator: true)
+          .pop(); // Dismiss the dialog if it's showing
+    }
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -46,35 +54,61 @@ class _SaiCounterState extends State<SaiCounter> {
 
   void _startTimer() {
     _timer?.cancel(); // Cancel any existing timer
-    _timer = Timer(Duration(minutes: 2), _showUpdatePopup);
+    _timer = Timer(const Duration(minutes: 10), _showUpdatePopup);
+  }
+
+  void _openPdfViewer() async {
+    String documentPath =
+        "https://firebasestorage.googleapis.com/v0/b/fypdatabase-c8728.appspot.com/o/sai.pdf?alt=media&token=82792cad-d4b2-4483-9657-9c4079c4a0ce"; // Replace with your local file path
+
+    if (Platform.isAndroid) {
+      // Request storage permission for Android
+      var status = await Permission.manageExternalStorage.request();
+      PermissionStatus.granted;
+      // if (!status.isGranted) {
+      //   return; // Exit if permission not granted
+      // }
+
+      if (status.isGranted) {
+        try {
+          PdftronFlutter.openDocument(documentPath);
+        } catch (e) {
+          print("Error opening document: $e");
+        }
+      } else if (status.isPermanentlyDenied) {
+        openAppSettings();
+      }
+    }
   }
 
   void _showUpdatePopup() {
     if (mounted) {
-      // Check if the widget is still in the tree
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text("Reminder"),
-          content: Text("Did you forget to press the Sa'i counter button?"),
+          // ... AlertDialog content ...
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
                 _incrementSaiCount(); // Increment the counter
               },
-              child: Text("Update Counter"),
+              child: const Text("Update Counter"),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
                 _startTimer(); // Restart the timer
               },
-              child: Text("No, Thanks"),
+              child: const Text("No, Thanks"),
             ),
           ],
         ),
-      );
+      ).then((_) {
+        isDialogShowing = false; // Update the flag when dialog is dismissed
+      });
+
+      isDialogShowing = true; // Update the flag when showing the dialog
     }
   }
 
@@ -94,29 +128,42 @@ class _SaiCounterState extends State<SaiCounter> {
   Widget build(BuildContext context) {
     final counterProvider = Provider.of<AppProvider>(context);
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          'Sai Count: ${counterProvider.saiCount}',
-          style: TextStyle(fontSize: 24),
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(
+              "assets/images/background.jpeg"), // Replace with your image path
+          fit: BoxFit.cover, // This will cover the entire container
         ),
-        SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: _incrementSaiCount,
-              child: Text('Increment'),
-            ),
-            SizedBox(width: 20),
-            ElevatedButton(
-              onPressed: resetSaiCount,
-              child: Text('Reset'),
-            ),
-          ],
-        ),
-      ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Sai Count: ${counterProvider.saiCount}',
+            style: const TextStyle(fontSize: 24),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: _incrementSaiCount,
+                child: const Text('+Round'),
+              ),
+              const SizedBox(width: 20),
+              ElevatedButton(
+                onPressed: resetSaiCount,
+                child: const Text('Reset'),
+              ),
+            ],
+          ),
+          ElevatedButton(
+            onPressed: _openPdfViewer,
+            child: const Text('View Sai Guide'),
+          ),
+        ],
+      ),
     );
   }
 }

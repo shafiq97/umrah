@@ -1,8 +1,8 @@
 import 'package:ficonsax/ficonsax.dart';
 import 'package:fintracker/extension.dart';
 import 'package:fintracker/providers/app_provider.dart';
+import 'package:fintracker/screens/dua.dart';
 import 'package:fintracker/screens/sai/sai-counter.dart';
-import 'package:fintracker/screens/categories/categories.screen.dart';
 import 'package:fintracker/screens/home/home.screen.dart';
 import 'package:fintracker/screens/onboard/onboard_screen.dart';
 import 'package:fintracker/screens/tawaf/tawaf_screen.dart';
@@ -42,6 +42,11 @@ class _MainScreenState extends State<MainScreen> {
         "iconSelected": IconsaxBold.wallet,
         "label": "Sai"
       },
+      {
+        "icon": IconsaxOutline.book_square,
+        "iconSelected": IconsaxBold.book_square,
+        "label": "Du'a"
+      },
     ];
 
     return Consumer<AppProvider>(
@@ -57,8 +62,8 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 const HomeScreen(),
                 TawafCounter(),
-                SaiCounter(),
-                const CategoriesScreen(),
+                const SaiCounter(),
+                DuaPage(),
               ],
             )),
             Container(

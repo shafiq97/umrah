@@ -55,6 +55,9 @@ dependencies:
   firebase_auth: ^4.15.0
   any_link_preview: ^3.0.1
   url_launcher: ^6.2.2
+  pdftron_flutter: ^1.0.1-24
+  permission_handler: ^11.0.1
+  cloud_firestore: ^4.13.6
 
 dev_dependencies:
   flutter_test:
@@ -85,6 +88,7 @@ flutter:
   assets:
     - assets/currencies.json
     - assets/images/
+    - assets/files/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
