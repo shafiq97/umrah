@@ -45,40 +45,49 @@ class _DuaPageState extends State<DuaPage> {
       appBar: AppBar(
         title: const Text('Add Du\'a'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Title'),
-                onSaved: (value) => _title = value!,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter a title';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Du\'a Text'),
-                onSaved: (value) => _text = value!,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter the text of the du\'a';
-                  }
-                  return null;
-                },
-                maxLines: 5,
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submitForm,
-                child: const Text('Submit'),
-              ),
-            ],
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+                "assets/images/background.jpeg"), // Replace with your image path
+            fit: BoxFit.cover, // This will cover the entire container
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Title'),
+                  onSaved: (value) => _title = value!,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a title';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Du\'a Text'),
+                  onSaved: (value) => _text = value!,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter the text of the du\'a';
+                    }
+                    return null;
+                  },
+                  maxLines: 5,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _submitForm,
+                  child: const Text('Submit'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
