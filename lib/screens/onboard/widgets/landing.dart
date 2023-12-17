@@ -13,6 +13,13 @@ class LandingPage extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                  "assets/images/background.jpeg"), // Replace with your image path
+              fit: BoxFit.cover, // This will cover the entire container
+            ),
+          ),
           padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -20,6 +27,13 @@ class LandingPage extends StatelessWidget {
               Expanded(
                   child: ListView(
                 children: [
+                  Center(
+                    child: Image.asset(
+                      "assets/images/logo.jpeg", // Logo image path
+                      width: 150, // Set the width as needed
+                      height: 150, // Set the height as needed
+                    ),
+                  ),
                   Text(
                     "Your Umrah Mutawwif",
                     style: theme.textTheme.headlineLarge!.merge(TextStyle(
