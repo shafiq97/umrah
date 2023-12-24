@@ -51,9 +51,9 @@ class _MainScreenState extends State<MainScreen> {
 
     return Consumer<AppProvider>(
       builder: (context, provider, _) {
-        if (provider.currency == null || provider.username == null) {
-          return OnboardScreen();
-        }
+        // if (provider.currency == null || provider.username == null) {
+        //   return OnboardScreen();
+        // }
         return Scaffold(
           body: Column(children: [
             Expanded(
