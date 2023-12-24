@@ -2,6 +2,7 @@ import 'package:ficonsax/ficonsax.dart';
 import 'package:fintracker/extension.dart';
 import 'package:fintracker/providers/app_provider.dart';
 import 'package:fintracker/screens/dua.dart';
+import 'package:fintracker/screens/onboard/widgets/landing.dart';
 import 'package:fintracker/screens/sai/sai-counter.dart';
 import 'package:fintracker/screens/home/home.screen.dart';
 import 'package:fintracker/screens/onboard/onboard_screen.dart';
@@ -51,9 +52,9 @@ class _MainScreenState extends State<MainScreen> {
 
     return Consumer<AppProvider>(
       builder: (context, provider, _) {
-        // if (provider.currency == null || provider.username == null) {
-        //   return OnboardScreen();
-        // }
+        if (provider.username == null) {
+          return OnboardScreen();
+        }
         return Scaffold(
           body: Column(children: [
             Expanded(
