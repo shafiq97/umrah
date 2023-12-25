@@ -54,7 +54,7 @@ class _SaiCounterState extends State<SaiCounter> {
 
   void _startTimer() {
     _timer?.cancel(); // Cancel any existing timer
-    _timer = Timer(const Duration(minutes: 10), _showUpdatePopup);
+    _timer = Timer(const Duration(minutes: 1), _showUpdatePopup);
   }
 
   void _openPdfViewer() async {
