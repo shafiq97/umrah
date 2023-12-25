@@ -1,10 +1,10 @@
-import 'package:currency_picker/currency_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:fintracker/extension.dart';
 import 'package:fintracker/helpers/db.helper.dart';
 import 'package:fintracker/providers/app_provider.dart';
-import 'package:fintracker/widgets/buttons/button.dart';
 import 'package:fintracker/widgets/dialog/confirm.modal.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,9 +16,25 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  String? phoneNumber;
+
   @override
   void initState() {
     super.initState();
+    _fetchPhoneNumber();
+  }
+
+  Future<void> _fetchPhoneNumber() async {
+    var userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      var doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+      setState(() {
+        phoneNumber = doc.data()?['phoneNumber'] as String?;
+      });
+    }
   }
 
   @override
@@ -64,68 +80,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           padding: EdgeInsets.zero,
           children: [
             ListTile(
-              onTap: () {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      TextEditingController controller =
-                          TextEditingController(text: provider.username);
-                      return AlertDialog(
-                        title: Text(
-                          "Edit Profile",
-                          style: context.theme.textTheme.titleLarge!
-                              .apply(fontWeightDelta: 2),
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        content: SizedBox(
-                          width: MediaQuery.of(context).size.width - 60 < 500
-                              ? MediaQuery.of(context).size.width - 60
-                              : 500,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              TextFormField(
-                                controller: controller,
-                                decoration: InputDecoration(
-                                    label:
-                                        const Text("What should we call you?"),
-                                    hintText: "Enter your name",
-                                    filled: true,
-                                    border: UnderlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 12, horizontal: 15)),
-                              )
-                            ],
-                          ),
-                        ),
-                        actions: [
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: AppButton(
-                                onPressed: () {
-                                  if (controller.text.isEmpty) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content:
-                                                Text("Please enter name")));
-                                  } else {
-                                    provider.updateUsername(controller.text);
-                                    Navigator.of(context).pop();
-                                  }
-                                },
-                                label: "Save my profile",
-                              ))
-                            ],
-                          )
-                        ],
-                      );
-                    });
-              },
+              onTap: () => _editNameDialog(provider),
               visualDensity: const VisualDensity(vertical: -2),
               title: const Text(
                 "Name",
@@ -139,6 +94,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       style: context.theme.textTheme.bodySmall,
                     );
                   }),
+            ),
+            ListTile(
+              onTap: _editPhoneDialog,
+              visualDensity: const VisualDensity(vertical: -2),
+              title: const Text(
+                "Phone Number",
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+              ),
+              subtitle: Text(
+                phoneNumber ?? "Not set",
+                style: context.theme.textTheme.bodySmall,
+              ),
             ),
             ListTile(
               onTap: () async {
@@ -168,5 +135,81 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ))
       ],
     ));
+  }
+
+  void _editNameDialog(AppProvider provider) {
+    TextEditingController nameController =
+        TextEditingController(text: provider.username);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Name'),
+          content: TextField(
+            controller: nameController,
+            decoration: const InputDecoration(hintText: 'Enter your name'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text('Save'),
+              onPressed: () {
+                provider.updateUsername(nameController.text);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _editPhoneDialog() {
+    TextEditingController phoneController =
+        TextEditingController(text: phoneNumber);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Phone Number'),
+          content: TextField(
+            controller: phoneController,
+            decoration:
+                const InputDecoration(hintText: 'Enter your phone number'),
+            keyboardType: TextInputType.phone,
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text('Save'),
+              onPressed: () async {
+                // This line is where _updatePhoneNumber is effectively called
+                await _updatePhoneNumber(phoneController.text);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _updatePhoneNumber(String newPhoneNumber) async {
+    String? userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null && newPhoneNumber.isNotEmpty) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update({'phoneNumber': newPhoneNumber});
+      setState(() {
+        phoneNumber = newPhoneNumber;
+      });
+    }
   }
 }

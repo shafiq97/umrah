@@ -13,10 +13,15 @@ class OnboardScreen extends StatelessWidget {
       body: PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
-        children: const [
-          LandingPage(),
-          // SettingsScreen(),
-          // ProfileScreen()
+        children: [
+          LandingPage(
+            onGetStarted: () {
+              _pageController.animateToPage(1,
+                  duration: const Duration(milliseconds: 350),
+                  curve: Curves.easeIn);
+            },
+          ),
+          const ProfileWidget(),
         ],
       ),
     );

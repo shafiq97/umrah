@@ -9,7 +9,8 @@ import 'package:fintracker/widgets/buttons/button.dart';
 import 'package:flutter/material.dart';
 
 class LandingPage extends StatelessWidget {
-  const LandingPage({super.key});
+  final VoidCallback onGetStarted;
+  const LandingPage({super.key, required this.onGetStarted});
 
   @override
   Widget build(BuildContext context) {
@@ -90,12 +91,7 @@ class LandingPage extends StatelessWidget {
                 child: AppButton(
                   color: theme.colorScheme.primary,
                   isFullWidth: true,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SettingsScreen()),
-                    );
-                  },
+                  onPressed: onGetStarted,
                   size: AppButtonSize.large,
                   label: "Get Started",
                   borderRadius: BorderRadius.circular(100),

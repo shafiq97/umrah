@@ -148,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => const ProfileScreen()));
+                                builder: (_) => const SettingsScreen()));
                       },
                       icon: const Icon(IconsaxOutline.user_octagon))
                 ],

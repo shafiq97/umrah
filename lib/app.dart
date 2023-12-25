@@ -65,6 +65,7 @@ class App extends StatelessWidget {
     return DynamicColorBuilder(
         builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
       return MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Your Umrah Mutawwif',
         theme: _buildTheme(
             brightness: Brightness.light, color: lightDynamic?.primary),
