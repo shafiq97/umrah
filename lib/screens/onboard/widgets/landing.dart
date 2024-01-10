@@ -40,7 +40,7 @@ class LandingPage extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "Your Umrah Mutawwif",
+                    "YourUmrahMutawwif",
                     style: theme.textTheme.headlineLarge!.merge(TextStyle(
                         color: theme.colorScheme.primary,
                         fontWeight: FontWeight.bold)),

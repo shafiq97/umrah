@@ -62,6 +62,25 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _openPdfViewerTahalul() async {
+    String documentPath =
+        "https://firebasestorage.googleapis.com/v0/b/fypdatabase-c8728.appspot.com/o/TAHALUL.pdf?alt=media&token=37c40340-54af-4d4a-936c-11730b3d8a7c"; // Replace with your file path or URL
+
+    if (Platform.isAndroid) {
+      // Request storage permission for Android
+      var status = await Permission.manageExternalStorage.request();
+      if (!status.isGranted) {
+        return; // Exit if permission not granted
+      }
+    }
+
+    try {
+      PdftronFlutter.openDocument(documentPath);
+    } catch (e) {
+      print("Error opening document: $e");
+    }
+  }
+
   //double _savings = 0;
   DateTimeRange _range = DateTimeRange(
       start: DateTime.now().subtract(Duration(days: DateTime.now().day - 1)),
@@ -250,6 +269,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ElevatedButton(
                     onPressed: _openPdfViewer,
                     child: const Text('View Prohibitions Guide'),
+                  ),
+                  ElevatedButton(
+                    onPressed: _openPdfViewerTahalul,
+                    child: const Text('View Tahalul Guide'),
                   ),
                   StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
