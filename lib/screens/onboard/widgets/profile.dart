@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:currency_picker/currency_picker.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:fintracker/helpers/color.helper.dart';
 import 'package:fintracker/helpers/db.helper.dart';
@@ -19,7 +18,6 @@ class ProfileWidget extends StatefulWidget {
 }
 
 class _ProfileWidget extends State<ProfileWidget> {
-  final CurrencyService currencyService = CurrencyService();
   String _username = "";
   @override
   void initState() {
@@ -112,43 +110,56 @@ class _ProfileWidget extends State<ProfileWidget> {
                   } else {
                     // Use Firebase Auth to create a new user
                     try {
-                      UserCredential userCredential = await FirebaseAuth
-                          .instance
-                          .createUserWithEmailAndPassword(
-                        email: email,
-                        password: password,
-                      );
-                      // Handle successful signup, e.g., navigate to the next screen
-                      // Handle successful signup, e.g., navigate to the next screen
-                      User? user = userCredential.user;
-                      if (user != null) {
-                        // Here you create a map of the user data you want to store
-                        Map<String, dynamic> userData = {
-                          'username': _username,
-                          'email': user.email,
-                          // Add any other user-related data here
-                        };
+                      final existingMethods = await FirebaseAuth.instance
+                          .fetchSignInMethodsForEmail(email);
 
-                        // Then you store that in Firestore under the users collection
-                        await FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(user.uid)
-                            .set(userData);
+                      if (existingMethods.isEmpty) {
+                        // Email doesn't exist, create a new user
+                        UserCredential userCredential = await FirebaseAuth
+                            .instance
+                            .createUserWithEmailAndPassword(
+                          email: email,
+                          password: password,
+                        );
+
+                        User? user = userCredential.user;
+                        if (user != null) {
+                          // Create a map of user data to store in Firestore
+                          Map<String, dynamic> userData = {
+                            'username': _username,
+                            'email': user.email,
+                            // Add any other user-related data here
+                          };
+
+                          // Store user data in Firestore
+                          await FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(user.uid)
+                              .set(userData);
+                        }
+                      } else {
+                        // Email already exists, sign in instead
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: email,
+                          password: password,
+                        );
+                        // await provider.reset();
+                        provider.update(username: _username).then((value) {});
                       }
                     } on FirebaseAuthException catch (e) {
                       log(e.toString());
-                      // Handle signup error, e.g., show error message
                     }
                   }
 
                   if (_username.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("Please fill all the details")));
-                  } else {
-                    await resetDatabase();
-                    await provider.reset();
-                    provider.update(username: _username).then((value) {});
                   }
+                  // else {
+                  //   await resetDatabase();
+                  //   await provider.reset();
+                  //   provider.update(username: _username).then((value) {});
+                  // }
                 },
               )
             ])),
