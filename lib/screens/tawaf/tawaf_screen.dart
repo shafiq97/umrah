@@ -70,7 +70,7 @@ class _TawafCounterState extends State<TawafCounter> {
 
   void _startTimer() {
     _timer?.cancel(); // Cancel any existing timer
-    // _timer = Timer(const Duration(minutes: 10), _showUpdatePopup);
+    _timer = Timer(const Duration(minutes: 1), _showUpdatePopup);
   }
 
   void _showUpdatePopup() {
@@ -87,7 +87,7 @@ class _TawafCounterState extends State<TawafCounter> {
                 Navigator.of(context).pop();
                 _incrementTawafCount();
               },
-              child: const Text("Update Counter"),
+              child: const Text("Update Tawaf Counter"),
             ),
             TextButton(
               onPressed: () {

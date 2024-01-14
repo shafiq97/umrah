@@ -1,10 +1,5 @@
 import 'package:ficonsax/ficonsax.dart';
 import 'package:fintracker/helpers/color.helper.dart';
-import 'package:fintracker/screens/home/home.screen.dart';
-import 'package:fintracker/screens/main.screen.dart';
-import 'package:fintracker/screens/onboard/widgets/profile.dart';
-import 'package:fintracker/screens/sai/sai-counter.dart';
-import 'package:fintracker/screens/settings/settings.screen.dart';
 import 'package:fintracker/widgets/buttons/button.dart';
 import 'package:flutter/material.dart';
 

@@ -21,8 +21,6 @@ class ProfileWidget extends StatefulWidget {
 class _ProfileWidget extends State<ProfileWidget> {
   final CurrencyService currencyService = CurrencyService();
   String _username = "";
-  Currency? _currency;
-
   @override
   void initState() {
     super.initState();
@@ -44,7 +42,7 @@ class _ProfileWidget extends State<ProfileWidget> {
                   child: ListView(
                 children: [
                   Text(
-                    "Hi! \nWelcome Umrah Mutawwif",
+                    "Hi! \nWelcome to  YourUmrahMutawwif",
                     style: theme.textTheme.headlineMedium!.apply(
                         color: theme.colorScheme.primary, fontWeightDelta: 2),
                   ),

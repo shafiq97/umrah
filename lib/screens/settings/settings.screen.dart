@@ -3,10 +3,12 @@ import 'package:ficonsax/ficonsax.dart';
 import 'package:fintracker/extension.dart';
 import 'package:fintracker/helpers/db.helper.dart';
 import 'package:fintracker/providers/app_provider.dart';
+import 'package:fintracker/screens/onboard/widgets/profile.dart';
 import 'package:fintracker/widgets/dialog/confirm.modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -131,10 +133,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 style: context.theme.textTheme.bodySmall,
               ),
             ),
+            ListTile(
+              onTap: () async {
+                await provider.reset();
+                _logout(); // Replace with your profile screen route
+              },
+              visualDensity: const VisualDensity(vertical: -2),
+              title: const Text(
+                "Logout",
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+              ),
+              subtitle: const Text(
+                "Logout your account",
+              ),
+            ),
           ],
         ))
       ],
     ));
+  }
+
+  void _logout() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      // Navigate to the login or home screen after successful logout
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ProfileWidget(),
+        ),
+      ); // Replace with your login screen route
+    } catch (e) {
+      // Handle any errors that may occur during logout
+      print("Error during logout: $e");
+    }
   }
 
   void _editNameDialog(AppProvider provider) {
