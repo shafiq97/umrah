@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pdftron_flutter/pdftron_flutter.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
-import 'package:permission_handler/permission_handler.dart'; // Add this import
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 
 class SaiCounter extends StatefulWidget {
@@ -15,36 +15,8 @@ class SaiCounter extends StatefulWidget {
 
 class _SaiCounterState extends State<SaiCounter> {
   Timer? _timer;
-  bool isDialogShowing = false; // Add a flag to track dialog state
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // routeObserver.subscribe(
-    //     this as RouteAware, ModalRoute.of(context) as PageRoute);
-  }
-
-  @override
-  void dispose() {
-    if (isDialogShowing) {
-      Navigator.of(context, rootNavigator: true)
-          .pop(); // Dismiss the dialog if it's showing
-    }
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  @override
-  void didPushNext() {
-    // Called when a new route has been pushed, and this route is no longer visible.
-    // Cancel your timer here
-  }
-
-  @override
-  void didPopNext() {
-    // Called when the top route has been popped off, and this route shows up.
-    // Restart your timer here
-  }
+  bool showUpdateOptions =
+      false; // Flag to control the visibility of update options
 
   @override
   void initState() {
@@ -52,23 +24,47 @@ class _SaiCounterState extends State<SaiCounter> {
     _startTimer();
   }
 
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
   void _startTimer() {
-    _timer?.cancel(); // Cancel any existing timer
-    _timer = Timer(const Duration(minutes: 1), _showUpdatePopup);
+    _timer?.cancel();
+    _timer = Timer(const Duration(minutes: 1), () {
+      setState(() {
+        showUpdateOptions = true; // Show the inline update options
+      });
+    });
+  }
+
+  void _incrementSaiCount() {
+    final counterProvider = Provider.of<AppProvider>(context, listen: false);
+    counterProvider.incrementSaiCount();
+    _startTimer(); // Reset the timer
+    _hideUpdateOptions();
+  }
+
+  void resetSaiCount() {
+    final counterProvider = Provider.of<AppProvider>(context, listen: false);
+    counterProvider.resetSaiCount();
+    _startTimer(); // Reset the timer
+    _hideUpdateOptions();
+  }
+
+  void _hideUpdateOptions() {
+    setState(() {
+      showUpdateOptions = false; // Hide the update options
+    });
   }
 
   void _openPdfViewer() async {
     String documentPath =
-        "https://firebasestorage.googleapis.com/v0/b/fypdatabase-c8728.appspot.com/o/sai.pdf?alt=media&token=82792cad-d4b2-4483-9657-9c4079c4a0ce"; // Replace with your local file path
+        "https://firebasestorage.googleapis.com/v0/b/fypdatabase-c8728.appspot.com/o/sai.pdf?alt=media&token=82792cad-d4b2-4483-9657-9c4079c4a0ce";
 
     if (Platform.isAndroid) {
-      // Request storage permission for Android
       var status = await Permission.manageExternalStorage.request();
-      PermissionStatus.granted;
-      // if (!status.isGranted) {
-      //   return; // Exit if permission not granted
-      // }
-
       if (status.isGranted) {
         try {
           PdftronFlutter.openDocument(documentPath);
@@ -81,49 +77,6 @@ class _SaiCounterState extends State<SaiCounter> {
     }
   }
 
-  void _showUpdatePopup() {
-    if (mounted) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          // ... AlertDialog content ...
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _incrementSaiCount(); // Increment the counter
-              },
-              child: const Text("Update Sai Counter"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _startTimer(); // Restart the timer
-              },
-              child: const Text("No, Thanks"),
-            ),
-          ],
-        ),
-      ).then((_) {
-        isDialogShowing = false; // Update the flag when dialog is dismissed
-      });
-
-      isDialogShowing = true; // Update the flag when showing the dialog
-    }
-  }
-
-  void _incrementSaiCount() {
-    final counterProvider = Provider.of<AppProvider>(context, listen: false);
-    counterProvider.incrementSaiCount();
-    _startTimer(); // Reset the timer
-  }
-
-  void resetSaiCount() {
-    final counterProvider = Provider.of<AppProvider>(context, listen: false);
-    counterProvider.resetSaiCount();
-    _startTimer(); // Reset the timer
-  }
-
   @override
   Widget build(BuildContext context) {
     final counterProvider = Provider.of<AppProvider>(context);
@@ -131,9 +84,8 @@ class _SaiCounterState extends State<SaiCounter> {
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(
-              "assets/images/background.jpeg"), // Replace with your image path
-          fit: BoxFit.cover, // This will cover the entire container
+          image: AssetImage("assets/images/background.jpeg"),
+          fit: BoxFit.cover,
         ),
       ),
       child: Column(
@@ -162,6 +114,27 @@ class _SaiCounterState extends State<SaiCounter> {
             onPressed: _openPdfViewer,
             child: const Text('View Sai Guide'),
           ),
+          if (showUpdateOptions) ...[
+            SizedBox(height: 20),
+            Text(
+              'Do you want to update the Sai count?',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: _incrementSaiCount,
+                  child: const Text('Yes, Update'),
+                ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: _hideUpdateOptions,
+                  child: const Text('No, Thanks'),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );

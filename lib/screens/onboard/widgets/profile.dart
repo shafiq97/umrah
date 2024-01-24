@@ -112,40 +112,13 @@ class _ProfileWidget extends State<ProfileWidget> {
                     try {
                       final existingMethods = await FirebaseAuth.instance
                           .fetchSignInMethodsForEmail(email);
-
-                      if (existingMethods.isEmpty) {
-                        // Email doesn't exist, create a new user
-                        UserCredential userCredential = await FirebaseAuth
-                            .instance
-                            .createUserWithEmailAndPassword(
-                          email: email,
-                          password: password,
-                        );
-
-                        User? user = userCredential.user;
-                        if (user != null) {
-                          // Create a map of user data to store in Firestore
-                          Map<String, dynamic> userData = {
-                            'username': _username,
-                            'email': user.email,
-                            // Add any other user-related data here
-                          };
-
-                          // Store user data in Firestore
-                          await FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(user.uid)
-                              .set(userData);
-                        }
-                      } else {
-                        // Email already exists, sign in instead
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: email,
-                          password: password,
-                        );
-                        // await provider.reset();
-                        provider.update(username: _username).then((value) {});
-                      }
+                      // Email already exists, sign in instead
+                      await FirebaseAuth.instance.signInWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+                      // await provider.reset();
+                      provider.update(username: _username).then((value) {});
                     } on FirebaseAuthException catch (e) {
                       log(e.toString());
                     }
