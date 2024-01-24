@@ -161,7 +161,67 @@ class _ProfileWidget extends State<ProfileWidget> {
                   //   provider.update(username: _username).then((value) {});
                   // }
                 },
-              )
+              ),
+
+              const SizedBox(height: 20), // Add some spacing
+
+              AppButton(
+                borderRadius: BorderRadius.circular(100),
+                label: "Register",
+                color: theme.colorScheme.secondary,
+                isFullWidth: true,
+                size: AppButtonSize.large,
+                onPressed: () async {
+                  String email = _emailController.text.trim();
+                  String password = _passwordController.text.trim();
+                  if (email.isEmpty || password.isEmpty || _username.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text("Please fill all the fields")),
+                    );
+                  } else {
+                    try {
+                      // Use Firebase Auth to register a new user
+                      UserCredential userCredential = await FirebaseAuth
+                          .instance
+                          .createUserWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+
+                      User? user = userCredential.user;
+                      if (user != null) {
+                        // Create a map of user data to store in Firestore
+                        Map<String, dynamic> userData = {
+                          'username': _username,
+                          'email': user.email,
+                          // Add any other user-related data here
+                        };
+
+                        // Store user data in Firestore
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(user.uid)
+                            .set(userData);
+
+                        // Show success message or navigate to another screen
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Registration successful!")),
+                        );
+
+                        // Optional: Navigate to another screen or reset the form
+                      }
+                    } on FirebaseAuthException catch (e) {
+                      // Handle registration errors
+                      log(e.toString());
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text("Failed to register: ${e.message}")),
+                      );
+                    }
+                  }
+                },
+              ),
             ])),
       ),
     );
